@@ -27,7 +27,12 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (request.nextUrl.pathname.startsWith("/admin") && request.nextUrl.pathname !== "/admin/login") {
+  const publicAdminPaths = ["/admin/login", "/admin/update-password"];
+
+  if (
+    request.nextUrl.pathname.startsWith("/admin") &&
+    !publicAdminPaths.includes(request.nextUrl.pathname)
+  ) {
     if (!user) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin/login";
